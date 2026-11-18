@@ -1,0 +1,791 @@
+:root {
+  --bg-color: #f4f6f8;
+  --card-bg: #ffffff;
+  --surface-subtle: #f8fafc;
+  --border-color: #e2e8f0;
+  --primary: #0f766e;
+  --primary-hover: #0d635c;
+  --primary-soft: #f0fdfa;
+  --warning-color: #d97706;
+  --text-main: #0f172a;
+  --text-sub: #64748b;
+  --danger: #dc2626;
+  --danger-soft: #fef2f2;
+  --shadow-sm: 0 1px 3px rgba(15, 23, 42, 0.06);
+  --shadow-md: 0 4px 12px rgba(15, 23, 42, 0.08);
+}
+
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html, body {
+  background-color: var(--bg-color);
+  color: var(--text-main);
+  min-height: 100vh;
+  width: 100%;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -webkit-tap-highlight-color: transparent;
+}
+
+body {
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  padding: 12px;
+}
+
+.icon-xs { width: 14px; height: 14px; }
+.icon-sm { width: 16px; height: 16px; }
+.icon-md { width: 20px; height: 20px; }
+
+.app-container {
+  width: 100%;
+  max-width: 430px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+/* ================= TELA DE LOGIN ================= */
+.card-login {
+  background: var(--card-bg);
+  padding: 32px 24px;
+  border-radius: 20px;
+  border: 1px solid var(--border-color);
+  box-shadow: var(--shadow-md);
+  margin-top: 24px;
+  width: 100%;
+}
+
+.header-login {
+  text-align: center;
+  margin-bottom: 24px;
+}
+
+.logo-wrapper {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 10px;
+}
+
+.logo-app {
+  width: 60px;
+  height: 60px;
+  border-radius: 16px;
+  box-shadow: var(--shadow-sm);
+}
+
+.titulo-login {
+  font-size: 22px;
+  font-weight: 700;
+  color: var(--text-main);
+  letter-spacing: -0.4px;
+}
+
+.subtitulo-login {
+  font-size: 13px;
+  color: var(--text-sub);
+  margin-top: 2px;
+}
+
+.grupo-input {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-bottom: 14px;
+}
+
+.grupo-input label {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text-main);
+}
+
+input, select {
+  background-color: var(--surface-subtle);
+  border: 1px solid var(--border-color);
+  color: var(--text-main);
+  padding: 11px 13px;
+  border-radius: 10px;
+  font-size: 14px;
+  font-family: inherit;
+  width: 100%;
+  transition: border-color 0.15s ease, background-color 0.15s ease;
+}
+
+input:focus, select:focus {
+  outline: none;
+  background-color: #ffffff;
+  border-color: var(--primary);
+  box-shadow: 0 0 0 3px rgba(15, 118, 110, 0.12);
+}
+
+.btn-primario {
+  background-color: var(--primary);
+  color: #ffffff;
+  font-weight: 600;
+  border: none;
+  padding: 12px 16px;
+  border-radius: 10px;
+  cursor: pointer;
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  gap: 8px;
+  font-size: 14px;
+  font-family: inherit;
+  width: 100%;
+  transition: background-color 0.15s ease;
+}
+
+.btn-primario:hover {
+  background-color: var(--primary-hover);
+}
+
+.btn-compacto {
+  width: auto;
+  padding: 0 14px;
+  font-size: 13px;
+}
+
+.auth-switch {
+  text-align: center;
+  margin-top: 16px;
+}
+
+.btn-link {
+  background: none;
+  border: none;
+  color: var(--primary);
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  padding: 4px;
+}
+
+.btn-link:hover {
+  text-decoration: underline;
+}
+
+/* Atalhos de contas salvas */
+.box-contas-salvas {
+  margin-top: 18px;
+  padding-top: 16px;
+  border-top: 1px solid var(--border-color);
+  text-align: center;
+}
+
+.titulo-contas-salvas {
+  display: block;
+  color: var(--text-sub);
+  font-size: 11px;
+  font-weight: 600;
+  margin-bottom: 8px;
+}
+
+.lista-chips-contas {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  justify-content: center;
+}
+
+.chip-conta {
+  display: inline-flex;
+  align-items: center;
+  background: var(--surface-subtle);
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.chip-conta-nome {
+  background: none;
+  border: none;
+  color: var(--text-main);
+  padding: 6px 10px;
+  font-size: 12px;
+  font-weight: 500;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.chip-conta-nome:hover {
+  background: #eef2f6;
+}
+
+.chip-conta-del {
+  background: var(--danger-soft);
+  border: none;
+  border-left: 1px solid var(--border-color);
+  color: var(--danger);
+  padding: 6px 8px;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+}
+
+/* ================= DASHBOARD PRINCIPAL ================= */
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 4px 2px;
+}
+
+.user-info {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.header-logo {
+  width: 38px;
+  height: 38px;
+  border-radius: 10px;
+}
+
+.user-info span {
+  font-size: 12px;
+  color: var(--text-sub);
+  display: block;
+}
+
+.user-info h2 {
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--text-main);
+}
+
+.btn-icon {
+  background: var(--card-bg);
+  border: 1px solid var(--border-color);
+  color: var(--text-main);
+  padding: 8px 10px;
+  border-radius: 10px;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: var(--shadow-sm);
+}
+
+.card-saldo {
+  background: linear-gradient(135deg, #0f766e, #115e59);
+  border-radius: 18px;
+  padding: 22px;
+  color: #ffffff;
+  box-shadow: var(--shadow-md);
+  margin-bottom: 14px;
+}
+
+.saldo-topo {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.label-saldo {
+  font-size: 13px;
+  color: rgba(255, 255, 255, 0.85);
+  font-weight: 500;
+}
+
+.btn-olho {
+  background: rgba(255, 255, 255, 0.14);
+  border: none;
+  color: #ffffff;
+  padding: 6px;
+  border-radius: 8px;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+}
+
+.card-saldo h1 {
+  font-size: 30px;
+  font-weight: 700;
+  margin: 8px 0 10px 0;
+  letter-spacing: -0.6px;
+}
+
+.indicador-tendencia {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  background: rgba(255, 255, 255, 0.14);
+  padding: 4px 10px;
+  border-radius: 20px;
+}
+
+.secao {
+  margin-bottom: 14px;
+}
+
+.secao h3 {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text-main);
+  margin-bottom: 10px;
+}
+
+.card-branco {
+  background: var(--card-bg);
+  padding: 16px;
+  border-radius: 16px;
+  border: 1px solid var(--border-color);
+  box-shadow: var(--shadow-sm);
+}
+
+.linha-titulo {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8px;
+}
+
+.linha-titulo h3 {
+  margin-bottom: 0;
+}
+
+.tag-pct {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--primary);
+  background: var(--primary-soft);
+  padding: 2px 8px;
+  border-radius: 6px;
+}
+
+.texto-auxiliar {
+  font-size: 12px;
+  color: var(--text-sub);
+  margin-top: 6px;
+}
+
+.barra-container {
+  width: 100%;
+  height: 8px;
+  background: #e2e8f0;
+  border-radius: 99px;
+  overflow: hidden;
+}
+
+.barra-fill {
+  height: 100%;
+  background: var(--primary);
+  border-radius: 99px;
+  transition: width 0.3s ease;
+}
+
+.barra-fill.amarela {
+  background: var(--warning-color);
+}
+
+.barra-fill.vermelha {
+  background: var(--danger);
+}
+
+/* Ferramentas rápidas */
+.grid-acoes {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+}
+
+.item-acao {
+  background: var(--card-bg);
+  border: 1px solid var(--border-color);
+  border-radius: 14px;
+  padding: 14px 8px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  color: var(--text-main);
+  cursor: pointer;
+  position: relative;
+  box-shadow: var(--shadow-sm);
+  transition: border-color 0.15s ease;
+}
+
+.item-acao:hover {
+  border-color: var(--primary);
+}
+
+.icone-box {
+  width: 38px;
+  height: 38px;
+  border-radius: 10px;
+  background: var(--primary-soft);
+  color: var(--primary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.item-acao span {
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.badge {
+  position: absolute;
+  top: 6px;
+  right: 6px;
+  background: var(--surface-subtle);
+  color: var(--text-sub);
+  border: 1px solid var(--border-color);
+  font-size: 9px;
+  font-weight: 600;
+  padding: 1px 5px;
+  border-radius: 4px;
+}
+
+form {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.form-inline {
+  flex-direction: row;
+  gap: 8px;
+  margin-bottom: 10px;
+}
+
+.linha-inputs {
+  display: flex;
+  gap: 8px;
+}
+
+.coluna-gap {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.grupo-botoes-duplo {
+  display: flex;
+  gap: 8px;
+}
+
+.btn-secundario {
+  background: var(--surface-subtle);
+  border: 1px solid var(--border-color);
+  color: var(--text-main);
+  padding: 9px 10px;
+  border-radius: 10px;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  width: 50%;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+}
+
+.btn-perigo {
+  background: var(--danger-soft);
+  border: 1px solid #fecaca;
+  color: var(--danger);
+  padding: 9px 10px;
+  border-radius: 10px;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  width: 50%;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+}
+
+/* Extrato */
+.grupo-dia {
+  margin-bottom: 14px;
+}
+
+.header-dia {
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--text-sub);
+  margin-bottom: 6px;
+  padding-left: 2px;
+}
+
+.lista-historico {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.lista-historico li {
+  background: var(--card-bg);
+  padding: 12px 14px;
+  border-radius: 12px;
+  border: 1px solid var(--border-color);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  box-shadow: var(--shadow-sm);
+}
+
+.info-item span {
+  display: block;
+  font-weight: 600;
+  font-size: 14px;
+  color: var(--text-main);
+}
+
+.info-item small {
+  color: var(--text-sub);
+  font-size: 11px;
+}
+
+.status-texto {
+  font-size: 12px;
+  color: var(--primary);
+  text-align: center;
+  margin-top: 8px;
+  font-weight: 500;
+}
+
+/* Gastos Fixos */
+.lista-fixos {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.item-fixo {
+  background: var(--surface-subtle);
+  padding: 10px 12px;
+  border-radius: 10px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border: 1px solid var(--border-color);
+}
+
+.btn-debitar-fixo {
+  background: var(--primary-soft);
+  color: var(--primary);
+  border: 1px solid #99f6e4;
+  padding: 6px 10px;
+  border-radius: 8px;
+  font-size: 11px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+/* Cotações e Conversor */
+.box-resultado-cambio {
+  background: var(--primary-soft);
+  border: 1px solid #99f6e4;
+  padding: 14px;
+  border-radius: 12px;
+  text-align: center;
+}
+
+.label-pequeno {
+  font-size: 11px;
+  color: var(--text-sub);
+  display: block;
+}
+
+.box-resultado-cambio strong {
+  font-size: 18px;
+  color: var(--primary);
+  display: block;
+  margin: 4px 0;
+}
+
+.box-resultado-cambio small {
+  display: block;
+  font-size: 11px;
+  color: var(--text-sub);
+}
+
+.grupo-pills {
+  display: flex;
+  gap: 4px;
+  background: var(--surface-subtle);
+  padding: 3px;
+  border-radius: 8px;
+  border: 1px solid var(--border-color);
+}
+
+.btn-periodo-grafico {
+  background: transparent;
+  border: none;
+  color: var(--text-sub);
+  padding: 4px 10px;
+  border-radius: 6px;
+  font-size: 11px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.btn-periodo-grafico.active {
+  background: #ffffff;
+  color: var(--primary);
+  box-shadow: var(--shadow-sm);
+}
+
+.grid-moedas {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.card-moeda {
+  background: var(--surface-subtle);
+  border: 1px solid var(--border-color);
+  border-radius: 12px;
+  padding: 12px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.moeda-info {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.moeda-sigla-badge {
+  width: 38px;
+  height: 38px;
+  border-radius: 10px;
+  background: #ffffff;
+  border: 1px solid var(--border-color);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--primary);
+}
+
+.moeda-nome {
+  display: flex;
+  flex-direction: column;
+}
+
+.moeda-nome strong {
+  font-size: 13px;
+  color: var(--text-main);
+}
+
+.moeda-nome small {
+  font-size: 10px;
+  color: var(--text-sub);
+}
+
+.moeda-valores {
+  text-align: right;
+}
+
+.moeda-valores .preco {
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--text-main);
+  display: block;
+}
+
+.moeda-valores .variacao {
+  font-size: 11px;
+  font-weight: 600;
+  display: block;
+}
+
+.variacao.alta { color: var(--primary); }
+.variacao.baixa { color: var(--danger); }
+
+.btn-card-comprar {
+  background: #ffffff;
+  border: 1px solid var(--border-color);
+  color: var(--text-main);
+  border-radius: 6px;
+  padding: 3px 8px;
+  font-size: 10px;
+  font-weight: 600;
+  cursor: pointer;
+  margin-top: 4px;
+}
+
+/* Categorias & Metas */
+.grid-categorias, .lista-metas {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.card-categoria-progresso {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.card-meta {
+  background: var(--surface-subtle);
+  padding: 12px;
+  border-radius: 12px;
+  border: 1px solid var(--border-color);
+}
+
+/* Mapa & Navegação Inferior */
+#mapa-container {
+  width: 100%;
+  height: 360px;
+  border-radius: 14px;
+  border: 1px solid var(--border-color);
+  z-index: 1;
+}
+
+.nav-bar {
+  position: fixed;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 100%;
+  max-width: 430px;
+  background: rgba(255, 255, 255, 0.96);
+  backdrop-filter: blur(8px);
+  border-top: 1px solid var(--border-color);
+  display: flex;
+  justify-content: space-around;
+  padding: 10px 0;
+  z-index: 999;
+}
+
+.nav-item {
+  background: none;
+  border: none;
+  color: var(--text-sub);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  font-size: 11px;
+  font-weight: 600;
+  cursor: pointer;
+  width: 25%;
+}
+
+.nav-item.active {
+  color: var(--primary);
+}

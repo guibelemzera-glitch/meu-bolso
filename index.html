@@ -1,0 +1,409 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>MeuBolso</title>
+
+  <!-- Configurações Nativas iOS -->
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <meta name="apple-mobile-web-app-title" content="MeuBolso">
+  <meta name="theme-color" content="#f4f6f8">
+
+  <!-- Ícones -->
+  <link rel="apple-touch-icon" href="icon.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="icon.png">
+  <link rel="icon" type="image/png" href="icon.png">
+
+  <!-- Fonte Inter (Tipografia limpa de aplicativos financeiros) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+  <!-- Leaflet CSS (Mapa) -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+
+  <!-- Estilo Principal -->
+  <link rel="stylesheet" href="style.css">
+  <link rel="manifest" href="manifest.json">
+
+  <!-- Bibliotecas Externas -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+
+  <!-- ================= TELA DE AUTENTICAÇÃO ================= -->
+  <div id="tela-login" class="app-container">
+    <div class="card-login">
+
+      <div class="header-login">
+        <div class="logo-wrapper">
+          <img src="icon.png" alt="MeuBolso" class="logo-app">
+        </div>
+        <h2 class="titulo-login">MeuBolso</h2>
+        <p class="subtitulo-login">Controle financeiro pessoal</p>
+      </div>
+
+      <!-- Formulário de Login -->
+      <form id="form-login">
+        <div class="grupo-input">
+          <label for="login-usuario">Usuário</label>
+          <input type="text" id="login-usuario" placeholder="Digite seu nome de usuário" required autocomplete="off">
+        </div>
+
+        <div class="grupo-input">
+          <label for="login-senha">Senha</label>
+          <input type="password" id="login-senha" placeholder="Digite sua senha" required>
+        </div>
+
+        <button type="submit" class="btn-primario">
+          <i data-lucide="log-in" class="icon-sm"></i>
+          Entrar na conta
+        </button>
+      </form>
+
+      <!-- Formulário de Registro -->
+      <form id="form-registro" style="display: none;">
+        <div class="grupo-input">
+          <label for="reg-usuario">Novo usuário</label>
+          <input type="text" id="reg-usuario" placeholder="Escolha um nome de usuário" required autocomplete="off">
+        </div>
+
+        <div class="grupo-input">
+          <label for="reg-senha">Criar senha</label>
+          <input type="password" id="reg-senha" placeholder="Crie uma senha" required>
+        </div>
+
+        <button type="submit" class="btn-primario">
+          <i data-lucide="user-plus" class="icon-sm"></i>
+          Criar conta
+        </button>
+      </form>
+
+      <!-- Alternador -->
+      <div class="auth-switch">
+        <button type="button" id="btn-alternar-modo" class="btn-link">
+          Não tem conta? Cadastre-se
+        </button>
+      </div>
+
+      <p id="status-login" class="status-texto"></p>
+    </div>
+  </div>
+
+  <!-- ================= TELA PRINCIPAL DO APP ================= -->
+  <div id="tela-app" class="app-container" style="display: none; padding-bottom: 84px;">
+    <header class="header">
+      <div class="user-info">
+        <img src="icon.png" alt="Logo" class="header-logo">
+        <div>
+          <span>Bem-vindo, <strong id="nome-usuario-logado">Usuário</strong></span>
+          <h2>MeuBolso</h2>
+        </div>
+      </div>
+      <button id="btn-logout" class="btn-icon" title="Sair">
+        <i data-lucide="log-out" class="icon-md"></i>
+      </button>
+    </header>
+
+    <!-- ABA 1: EXTRATO & CONTA -->
+    <main id="aba-extrato">
+      <section class="card-saldo">
+        <div class="saldo-topo">
+          <span class="label-saldo">Saldo disponível</span>
+          <button type="button" id="btn-toggle-saldo" class="btn-olho" title="Ocultar ou mostrar saldo">
+            <i data-lucide="eye" class="icon-sm"></i>
+          </button>
+        </div>
+        <h1 id="texto-saldo">R$ 0,00</h1>
+        <div class="indicador-tendencia">
+          <i data-lucide="wallet" class="icon-xs"></i>
+          <span id="texto-salario-base">Renda mensal: R$ 0,00</span>
+        </div>
+      </section>
+
+      <section class="secao card-branco">
+        <div class="linha-titulo">
+          <h3>Orçamento mensal</h3>
+          <span id="texto-orcamento-pct" class="tag-pct">0%</span>
+        </div>
+        <div class="barra-container">
+          <div id="barra-orcamento-fill" class="barra-fill" style="width: 0%;"></div>
+        </div>
+        <p id="texto-orcamento-info" class="texto-auxiliar">
+          Gastos: R$ 0,00 de R$ 0,00
+        </p>
+      </section>
+
+      <section class="secao card-branco">
+        <h3>Configurações da conta</h3>
+        <form id="form-salario" class="form-inline">
+          <input type="number" step="0.01" id="campo-salario" placeholder="Renda mensal de referência (R$)" required>
+          <button type="submit" class="btn-primario btn-compacto">Salvar</button>
+        </form>
+        <div class="grupo-botoes-duplo">
+          <button type="button" id="btn-ajustar-saldo" class="btn-secundario">
+            <i data-lucide="sliders-horizontal" class="icon-xs"></i>
+            Ajustar saldo
+          </button>
+          <button type="button" id="btn-zerar-conta" class="btn-perigo">
+            <i data-lucide="trash-2" class="icon-xs"></i>
+            Zerar dados
+          </button>
+        </div>
+      </section>
+
+      <section class="secao">
+        <h3>Ferramentas rápidas</h3>
+        <div class="grid-acoes" style="grid-template-columns: repeat(2, 1fr);">
+          <button type="button" id="btn-gps" class="item-acao">
+            <div class="icone-box">
+              <i data-lucide="map-pin" class="icon-md"></i>
+            </div>
+            <span>Localizar</span>
+            <small class="badge">GPS</small>
+          </button>
+
+          <button type="button" id="btn-cambio-rapido" class="item-acao">
+            <div class="icone-box">
+              <i data-lucide="dollar-sign" class="icon-md"></i>
+            </div>
+            <span>Dólar Hoje</span>
+            <small class="badge">API</small>
+          </button>
+        </div>
+        <p id="status-aviso" class="status-texto"></p>
+      </section>
+
+      <section class="secao card-branco">
+        <h3>Contas fixas recorrentes</h3>
+        <form id="form-gasto-fixo" class="form-inline" style="margin-bottom: 12px;">
+          <input type="text" id="fixo-nome" placeholder="Ex: Aluguel, Internet" required style="flex: 2;">
+          <input type="number" step="0.01" id="fixo-valor" placeholder="R$" required style="flex: 1;">
+          <button type="submit" class="btn-primario btn-compacto" title="Adicionar">
+            <i data-lucide="plus" class="icon-sm"></i>
+          </button>
+        </form>
+        <ul id="lista-gastos-fixos" class="lista-fixos"></ul>
+      </section>
+
+      <section class="secao card-branco">
+        <h3>Nova movimentação</h3>
+        <form id="formulario">
+          <input type="text" id="campo-descricao" placeholder="Descrição (Ex: Supermercado, PIX, Salário)" required>
+          <div class="linha-inputs">
+            <input type="number" step="0.01" id="campo-valor" placeholder="Valor (R$)" required>
+            <select id="campo-tipo">
+              <option value="saida">Saída (-)</option>
+              <option value="entrada">Entrada (+)</option>
+            </select>
+          </div>
+          <select id="campo-categoria">
+            <option value="Alimentação">Alimentação</option>
+            <option value="Transporte">Transporte</option>
+            <option value="Lazer">Lazer</option>
+            <option value="Moradia">Moradia</option>
+            <option value="Saúde">Saúde</option>
+            <option value="Salário/Renda">Salário / Renda</option>
+            <option value="Outros" selected>Outros</option>
+          </select>
+          <button type="submit" class="btn-primario">
+            <i data-lucide="check-circle-2" class="icon-sm"></i>
+            Registrar lançamento
+          </button>
+        </form>
+      </section>
+
+      <section class="secao">
+        <h3>Histórico de movimentações</h3>
+        <div id="container-extrato-agrupado"></div>
+      </section>
+    </main>
+
+    <!-- ABA 2: COTAÇÕES & CÂMBIO -->
+    <main id="aba-cotacoes" style="display: none;">
+      <section class="secao card-branco">
+        <h3>Conversor de moedas</h3>
+        <div class="coluna-gap">
+          <div class="linha-inputs">
+            <input type="number" id="converter-valor" placeholder="Valor em R$" value="100" step="0.01">
+            <select id="converter-moeda-destino">
+              <option value="USD">Dólar (USD)</option>
+              <option value="EUR">Euro (EUR)</option>
+              <option value="GBP">Libra (GBP)</option>
+              <option value="CAD">Dólar Canadense (CAD)</option>
+              <option value="ARS">Peso Argentino (ARS)</option>
+              <option value="JPY">Iene (JPY)</option>
+              <option value="BTC">Bitcoin (BTC)</option>
+            </select>
+          </div>
+
+          <div class="grupo-input" style="margin-bottom: 0;">
+            <label>Modalidade de operação / IOF</label>
+            <select id="converter-tipo-operacao">
+              <option value="dinheiro">Papel Moeda / Espécie (IOF 1,1%)</option>
+              <option value="cartao">Cartão Internacional (IOF 4,38%)</option>
+              <option value="comercial">Cotação Comercial Pura (Sem IOF)</option>
+            </select>
+          </div>
+
+          <div id="resultado-conversao" class="box-resultado-cambio">
+            <span class="label-pequeno">Valor estimado na moeda de destino</span>
+            <strong id="texto-resultado-cambio">R$ 100,00 = $ 0,00</strong>
+            <small id="texto-detalhe-iof">Custo total estimado com IOF: R$ 0,00</small>
+          </div>
+
+          <button type="button" id="btn-comprar-moeda-direto" class="btn-primario">
+            <i data-lucide="external-link" class="icon-sm"></i>
+            Acessar corretora de câmbio
+          </button>
+        </div>
+      </section>
+
+      <!-- Histórico Gráfico (7 e 30 dias) -->
+      <section class="secao card-branco">
+        <div class="linha-titulo" style="margin-bottom: 10px;">
+          <h3>Variação histórica</h3>
+          <div class="grupo-pills">
+            <button type="button" id="btn-grafico-7d" class="btn-periodo-grafico active">7 dias</button>
+            <button type="button" id="btn-grafico-30d" class="btn-periodo-grafico">30 dias</button>
+          </div>
+        </div>
+        <select id="grafico-moeda-select" style="margin-bottom: 12px;">
+          <option value="USD-BRL">Dólar Americano (USD-BRL)</option>
+          <option value="EUR-BRL">Euro (EUR-BRL)</option>
+          <option value="GBP-BRL">Libra Esterlina (GBP-BRL)</option>
+          <option value="CAD-BRL">Dólar Canadense (CAD-BRL)</option>
+          <option value="ARS-BRL">Peso Argentino (ARS-BRL)</option>
+          <option value="BTC-BRL">Bitcoin (BTC-BRL)</option>
+        </select>
+        <div style="position: relative; height: 190px; width: 100%;">
+          <canvas id="grafico-historico-moeda"></canvas>
+        </div>
+      </section>
+
+      <!-- Alerta de Preço -->
+      <section class="secao card-branco">
+        <div class="linha-titulo" style="margin-bottom: 6px;">
+          <h3>Alerta de cotação</h3>
+          <button type="button" id="btn-ativar-notificacoes" class="btn-link">
+            Ativar notificações
+          </button>
+        </div>
+        <p class="texto-auxiliar" style="margin-bottom: 10px;">
+          Defina um valor-alvo para ser avisado quando a moeda atingir a meta:
+        </p>
+        <div class="linha-inputs">
+          <select id="alerta-moeda-alvo" style="flex: 1;">
+            <option value="USD">Dólar (USD)</option>
+            <option value="EUR">Euro (EUR)</option>
+          </select>
+          <input type="number" id="alerta-preco-alvo" placeholder="Meta R$" value="5.20" step="0.01" style="flex: 1;">
+          <button type="button" id="btn-verificar-alvo" class="btn-primario btn-compacto">Salvar</button>
+        </div>
+        <div id="status-alerta-alvo" class="status-texto"></div>
+      </section>
+
+      <!-- Lista de Cotações -->
+      <section class="secao card-branco">
+        <div class="linha-titulo" style="margin-bottom: 12px;">
+          <h3>Cotações em tempo real</h3>
+          <button type="button" id="btn-atualizar-cotacoes" class="btn-link">
+            Atualizar
+          </button>
+        </div>
+        <div id="container-moedas" class="grid-moedas">
+          <p class="status-texto">Carregando cotações...</p>
+        </div>
+      </section>
+    </main>
+
+    <!-- ABA 3: ANÁLISE & METAS -->
+    <main id="aba-gestao" style="display: none;">
+      <!-- Resumo de Fluxo de Caixa -->
+      <section class="secao card-branco">
+        <h3>Resumo do fluxo financeiro</h3>
+        <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-top: 8px; text-align: center;">
+          <div style="background: var(--primary-soft); border: 1px solid #99f6e4; padding: 10px 6px; border-radius: 10px;">
+            <span style="display: block; font-size: 10px; color: var(--text-sub); font-weight: 600;">ENTRADAS</span>
+            <strong id="analise-total-entradas" style="font-size: 13px; color: var(--primary);">R$ 0,00</strong>
+          </div>
+          <div style="background: var(--danger-soft); border: 1px solid #fecaca; padding: 10px 6px; border-radius: 10px;">
+            <span style="display: block; font-size: 10px; color: var(--text-sub); font-weight: 600;">SAÍDAS</span>
+            <strong id="analise-total-saidas" style="font-size: 13px; color: var(--danger);">R$ 0,00</strong>
+          </div>
+          <div style="background: var(--surface-subtle); border: 1px solid var(--border-color); padding: 10px 6px; border-radius: 10px;">
+            <span style="display: block; font-size: 10px; color: var(--text-sub); font-weight: 600;">ECONOMIA</span>
+            <strong id="analise-taxa-economia" style="font-size: 13px; color: var(--text-main);">0%</strong>
+          </div>
+        </div>
+        <p id="analise-insight-texto" class="texto-auxiliar" style="margin-top: 10px; font-weight: 500; color: var(--text-main);"></p>
+      </section>
+
+      <!-- Gráfico + Detalhamento por Categoria -->
+      <section class="secao card-branco">
+        <h3>Distribuição de despesas</h3>
+        <div id="wrapper-grafico-categorias" style="position: relative; height: 210px; width: 100%; margin: 10px 0 14px 0; display: none;">
+          <canvas id="grafico-categorias"></canvas>
+        </div>
+        <div id="container-categorias" class="grid-categorias">
+          <p class="texto-auxiliar">Nenhuma despesa registrada.</p>
+        </div>
+      </section>
+
+      <!-- Metas Financeiras -->
+      <section class="secao card-branco">
+        <h3>Metas financeiras</h3>
+        <form id="form-meta" style="margin-bottom: 14px;">
+          <input type="text" id="meta-nome" placeholder="Nome do objetivo (Ex: Reserva de emergência)" required>
+          <div class="linha-inputs">
+            <input type="number" step="0.01" id="meta-alvo" placeholder="Valor objetivo (R$)" required>
+            <input type="number" step="0.01" id="meta-atual" placeholder="Saldo inicial (R$)" value="0">
+          </div>
+          <button type="submit" class="btn-primario">
+            <i data-lucide="target" class="icon-sm"></i>
+            Criar meta
+          </button>
+        </form>
+        <div id="container-metas" class="lista-metas"></div>
+      </section>
+    </main>
+
+    <!-- ABA 4: MAPA DE GASTOS -->
+    <main id="aba-mapa" style="display: none;">
+      <section class="secao card-branco">
+        <h3>Mapa de transações</h3>
+        <p class="texto-auxiliar" style="margin-bottom: 12px;">
+          Visualize os locais onde suas compras foram registradas com o GPS ativo.
+        </p>
+        <div id="mapa-container"></div>
+      </section>
+    </main>
+
+    <!-- BARRA DE NAVEGAÇÃO INFERIOR -->
+    <nav class="nav-bar">
+      <button type="button" id="tab-extrato" class="nav-item active">
+        <i data-lucide="receipt" class="icon-md"></i>
+        <span>Extrato</span>
+      </button>
+      <button type="button" id="tab-gestao" class="nav-item">
+        <i data-lucide="pie-chart" class="icon-md"></i>
+        <span>Análise</span>
+      </button>
+      <button type="button" id="tab-cotacoes" class="nav-item">
+        <i data-lucide="trending-up" class="icon-md"></i>
+        <span>Câmbio</span>
+      </button>
+      <button type="button" id="tab-mapa" class="nav-item">
+        <i data-lucide="map" class="icon-md"></i>
+        <span>Mapa</span>
+      </button>
+    </nav>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
